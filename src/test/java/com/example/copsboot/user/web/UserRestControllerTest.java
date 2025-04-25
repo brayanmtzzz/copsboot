@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -38,10 +39,21 @@ class UserRestControllerTest {
     @Test
     void givenAuthenticatedUser_userInfoEndpointReturnsOk() throws Exception {
         String subject = UUID.randomUUID().toString();
+        UserId userId = new UserId(UUID.randomUUID());
+
+        when(userService.findUserByAuthServerId(new AuthServerId(UUID.fromString(subject))))
+                .thenReturn(Optional.of(new User(
+                        userId,
+                        "test@example.com",
+                        new AuthServerId(UUID.fromString(subject)),
+                        "some-token"
+                )));
+
         mockMvc.perform(get("/api/users/me").with(jwt().jwt(builder -> builder.subject(subject))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("subject").value(subject))
-                .andExpect(jsonPath("claims").isMap());
+                .andExpect(jsonPath("claims").isMap())
+                .andExpect(jsonPath("userId").value(userId.asString()));
     }
 
     @Test
