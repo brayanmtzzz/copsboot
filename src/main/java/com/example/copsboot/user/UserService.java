@@ -15,4 +15,16 @@ public class UserService {
     public Optional<User> findUserByAuthServerId(AuthServerId authServerId) {
         return repository.findByAuthServerId(authServerId);
     }
+    
+    public User createUser(CreateUserParameters parameters) {
+        UserId userId = repository.nextId();
+        User user = new User(
+            userId,
+            parameters.email(),
+            parameters.authServerId(),
+            parameters.mobileToken()
+        );
+        return repository.save(user);
+    }
+    
 }
