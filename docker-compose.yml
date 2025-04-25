@@ -1,7 +1,14 @@
 version: '3'
 services:
+  db:
+    image: 'postgres:15.3'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: my-postgres-db-pwd
+
   identity:
-    image: quay.io/keycloak/keycloak:22.0.1
+    image: 'quay.io/keycloak/keycloak:22.0.1'
     entrypoint: /opt/keycloak/bin/kc.sh start-dev --import-realm
     ports:
       - '8180:8080'

@@ -1,6 +1,5 @@
 package com.example.copsboot.user.web;
 
-import com.c4_soft.springaddons.security.oauth2.test.webmvc.AutoConfigureAddonsWebmvcResourceServerSecurity;
 import com.example.copsboot.infrastructure.security.WebSecurityConfiguration;
 import com.example.copsboot.user.*;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserRestController.class)
-@AutoConfigureAddonsWebmvcResourceServerSecurity
 @Import(WebSecurityConfiguration.class)
 class UserRestControllerTest {
 
