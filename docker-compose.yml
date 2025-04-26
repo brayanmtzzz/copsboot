@@ -1,11 +1,14 @@
 version: '3'
 services:
   db:
-    image: 'postgres:15.3'
+    image: 'postgres:16.0'
     ports:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: my-postgres-db-pwd
+      POSTGRES_DB: copsbootdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   identity:
     image: 'quay.io/keycloak/keycloak:22.0.1'
@@ -19,3 +22,6 @@ services:
       KC_HOSTNAME: 'localhost'
       KC_HEALTH_ENABLED: 'true'
       KC_METRICS_ENABLED: 'true'
+
+volumes:
+  pgdata:
