@@ -4,6 +4,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.Instant;
 import java.util.Set;
@@ -11,6 +12,15 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateReportRequestValidatorTest {
+
+    private MockMultipartFile mockImage() {
+        return new MockMultipartFile(
+                "image",
+                "dummy.png",
+                "image/png",
+                new byte[]{1} // 1 byte falso para pasar la validación
+        );
+    }
 
     @Test
     public void givenTrafficIncidentWithZeroInvolvedCars_invalid() {
@@ -21,7 +31,8 @@ public class CreateReportRequestValidatorTest {
                     Instant.now(),
                     "The suspect ran away.",
                     true,
-                    0
+                    0,
+                    mockImage() // 👈 nuevo argumento
             );
 
             Set violations = validator.validate(request);
@@ -38,7 +49,8 @@ public class CreateReportRequestValidatorTest {
                     Instant.now(),
                     "The suspect ran away.",
                     true,
-                    2
+                    2,
+                    mockImage()
             );
 
             Set violations = validator.validate(request);
@@ -55,7 +67,8 @@ public class CreateReportRequestValidatorTest {
                     Instant.now(),
                     "The suspect ran away.",
                     false,
-                    0
+                    0,
+                    mockImage()
             );
 
             Set violations = validator.validate(request);

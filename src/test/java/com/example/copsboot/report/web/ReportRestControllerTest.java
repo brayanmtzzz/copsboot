@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.http.MediaType;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,43 +39,38 @@ public class ReportRestControllerTest {
     @Test
     public void officerIsAbleToPostAReport() throws Exception {
         UserId userId = new UserId(UUID.randomUUID());
-        AuthServerId authServerId = new AuthServerId(UUID.randomUUID());
-
-        User user = new User(
-                userId,
-                "officer@example.com",
-                authServerId,
-                "some-mobile-token"
-        );
-
-        ReportId reportId = new ReportId(UUID.randomUUID());
-        Report report = new Report(
-                reportId,
-                userId,
-                Instant.parse("2024-04-24T18:30:00Z"),
-                "The suspect was wearing a blue jacket."
-        );
+        AuthServerId authServerId = new AuthServerId(UUID.fromString("eaa8b8a5-a264-48be-98de-d8b4ae2750ac"));
+        User user = new User(userId, "wim@example.com", authServerId, "some-token");
 
         when(userService.findUserByAuthServerId(authServerId)).thenReturn(Optional.of(user));
         when(userService.getUserById(userId)).thenReturn(user);
-        when(reportService.createReport(any(CreateReportParameters.class))).thenReturn(report);
+        when(reportService.createReport(any(CreateReportParameters.class))).thenReturn(new Report(
+                new ReportId(UUID.randomUUID()),
+                userId,
+                Instant.parse("2023-04-11T22:59:03.189+02:00"),
+                "This is a test report description. The suspect was wearing a black hat."
+        ));
 
-        mockMvc.perform(post("/api/reports")
-                        .with(jwt().jwt(builder -> builder
-                                .subject(authServerId.value().toString())
-                                .claim("email", "officer@example.com"))
-                                .authorities(new SimpleGrantedAuthority("ROLE_OFFICER")))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "dateTime": "2024-04-24T18:30:00Z",
-                                  "description": "The suspect was wearing a blue jacket."
-                                }
-                                """))
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image",
+                "picture.png",
+                MediaType.IMAGE_PNG_VALUE,
+                new byte[]{1, 2, 3}
+        );
+
+        mockMvc.perform(multipart("/api/reports")
+                        .file(imageFile)
+                        .param("dateTime", "2023-04-11T22:59:03.189+02:00")
+                        .param("description", "This is a test report description. The suspect was wearing a black hat.")
+                        .param("trafficIncident", "false")
+                        .param("numberOfInvolvedCars", "0")
+                        .with(jwt().jwt(builder -> builder.subject(authServerId.value().toString())
+                                .claim("email", "wim@example.com"))
+                                .authorities(new SimpleGrantedAuthority("ROLE_OFFICER"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("reporter").value("officer@example.com"))
-                .andExpect(jsonPath("dateTime").value("2024-04-24T18:30:00Z"))
-                .andExpect(jsonPath("description").value("The suspect was wearing a blue jacket."));
-    }
+                .andExpect(jsonPath("reporter").value("wim@example.com"))
+                .andExpect(jsonPath("dateTime").value("2023-04-11T20:59:03.189Z"))
+                .andExpect(jsonPath("description").value("This is a test report description. The suspect was wearing a black hat."));
+        }
 }
