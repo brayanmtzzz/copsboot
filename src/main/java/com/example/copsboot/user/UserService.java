@@ -15,7 +15,7 @@ public class UserService {
     public Optional<User> findUserByAuthServerId(AuthServerId authServerId) {
         return repository.findByAuthServerId(authServerId);
     }
-    
+
     public User createUser(CreateUserParameters parameters) {
         UserId userId = repository.nextId();
         User user = new User(
@@ -26,5 +26,12 @@ public class UserService {
         );
         return repository.save(user);
     }
-    
+
+    public Optional<User> findUserById(UserId id) {
+        return repository.findById(id);
+    }
+
+    public User getUserById(UserId id) {
+        return findUserById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+    }
 }
