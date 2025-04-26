@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +44,7 @@ public class UserRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('OFFICER')")
     public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
-                              @RequestBody CreateUserRequest request) {
+                              @Valid @RequestBody CreateUserRequest request) {
         CreateUserParameters parameters = request.toParameters(jwt);
         User user = userService.createUser(parameters);
         return UserDto.fromUser(user);
