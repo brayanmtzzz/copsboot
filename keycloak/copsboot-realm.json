@@ -1,0 +1,40 @@
+{
+  "realm": "copsboot",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "copsboot-api",
+      "enabled": true,
+      "bearerOnly": true,
+      "protocol": "openid-connect"
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "ROLE_OFFICER",
+        "description": "Officer Role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "officer@example.com",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Officer",
+      "lastName": "Example",
+      "email": "officer@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_OFFICER"
+      ]
+    }
+  ]
+}
