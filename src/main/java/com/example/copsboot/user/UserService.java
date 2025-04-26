@@ -34,4 +34,8 @@ public class UserService {
     public User getUserById(UserId id) {
         return findUserById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
+
+    public Optional<User> findUserByMobileToken(String mobileToken) {
+        return repository.findByMobileToken(mobileToken);
+    }
 }

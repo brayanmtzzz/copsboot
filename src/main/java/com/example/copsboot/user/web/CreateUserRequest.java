@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.UUID;
 
+@ValidCreateUserRequest
 public record CreateUserRequest(@NotEmpty String mobileToken) {
 
     public CreateUserParameters toParameters(Jwt jwt) {
