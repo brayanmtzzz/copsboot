@@ -1,30 +1,36 @@
 {
   "realm": "copsboot",
   "enabled": true,
+  "registrationAllowed": true,
   "clients": [
     {
-      "clientId": "copsboot-api",
+      "clientId": "copsboot-mobile-client",
       "enabled": true,
-      "bearerOnly": true,
-      "protocol": "openid-connect"
+      "protocol": "openid-connect",
+      "publicClient": true, 
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "redirectUris": [
+        "https://oauth.pstmn.io/v1/callback"
+      ],
+      "authorizationServicesEnabled": false
     }
   ],
   "roles": {
     "realm": [
-      {
-        "name": "ROLE_OFFICER",
-        "description": "Officer Role"
-      }
+      { "name": "OFFICER" },
+      { "name": "CAPTAIN" },
+      { "name": "ADMIN" }
     ]
   },
   "users": [
     {
-      "username": "officer@example.com",
+      "username": "wim@example.com",
       "enabled": true,
+      "email": "wim@example.com",
       "emailVerified": true,
-      "firstName": "Officer",
+      "firstName": "Wim",
       "lastName": "Example",
-      "email": "officer@example.com",
       "credentials": [
         {
           "type": "password",
@@ -33,7 +39,7 @@
         }
       ],
       "realmRoles": [
-        "ROLE_OFFICER"
+        "OFFICER"
       ]
     }
   ]
